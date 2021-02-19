@@ -2,6 +2,9 @@
 
 ## How to use code
 
+1. Download datasets and pretraiend models using the notebook **download-data**
+2. Test that the code by running the command `pytest src`
+
 ## Tasks:
 
 - Theoretical analysis (Nicolas) **21 Feb**
@@ -20,4 +23,6 @@
 ## Frameworks
 - pytorch
 - pytorch lightning
-- pytest
+- pytest (for unit test)
+- tqdm (for progrss bar)
+- pandas 
