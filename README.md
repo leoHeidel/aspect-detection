@@ -26,3 +26,4 @@
 - pytest (for unit test)
 - tqdm (for progrss bar)
 - pandas 
+- nltk

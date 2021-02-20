@@ -11,5 +11,5 @@ def test_imdb():
     
     
 def test_english_w2v():
-    df = src.datasets.read_english_w2v()
+    df = src.datasets.read_english_w2v(lim=10000)
     assert not df.isnull().values.any()
