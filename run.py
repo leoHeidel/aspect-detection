@@ -21,7 +21,8 @@ if __name__ == "__main__":
     train_texts, train_labels = src.datasets.read_imdb()
         
     sentence = config['sentences']['sentence%s'%args.sentence]
-    print(sentence)
     
     detector = kmeans.KMeansAspectDetector(w2v, k=args.k)
-    detector.predict_sentence(sentence)
+    res = detector.predict_sentence(sentence)
+    
+    print(res)
