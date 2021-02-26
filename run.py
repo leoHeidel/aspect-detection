@@ -17,11 +17,11 @@ if __name__ == "__main__":
     with open(args.config) as config_file:
         config = yaml.safe_load(config_file)
             
-    #w2v = src.datasets.read_english_w2v(lim=10000)
-    #train_texts, train_labels = src.datasets.read_imdb()
+    w2v = src.datasets.read_english_w2v(lim=10000)
+    train_texts, train_labels = src.datasets.read_imdb()
         
     sentence = config['sentences']['sentence%s'%args.sentence]
     print(sentence)
     
-    #detector = kmeans.KMeansAspectDetector(w2v, k=args.k)
-    #detector.predict_sentence(sentence)
+    detector = kmeans.KMeansAspectDetector(w2v, k=args.k)
+    detector.predict_sentence(sentence)
