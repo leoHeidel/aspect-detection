@@ -1,10 +1,16 @@
-name: k-means_w2v
+name: kmeans
 
 model:
     filepath: src/kmeans.py
     class: KMeansAspectDetector
     parameters:
         k: 7
+        
+        
+embedding:
+    w2v:
+        lim: 1000
+    
 
 sentences:
     sentence1:  aised in Scranton, Pennsylvania, and New Castle County, 

@@ -24,6 +24,7 @@ if __name__ == "__main__":
     #GET THE ARGUMENTS
     parser = argparse.ArgumentParser(description = __doc__)
     parser.add_argument("-c", "--config", help = "File path to the config file")
+    parser.add_argument('-e', "--embedding", help = "Which word embedding to use. 'w2v' or 'BERT' ")
     parser.add_argument("-l", "--language", help = "Language on which we perform aspect extraction : 'fr' or 'eng' ")
     parser.add_argument("-k", help="Number of aspects")
     parser.add_argument("-s", "--sentence", required=True)
@@ -44,13 +45,28 @@ if __name__ == "__main__":
         elif args.language == 'eng':
             print("Selected Language : English")
         else:
-            raise NameError("There is no {} language. Try 'en' or 'fr'.".format(args.language))
+            raise NameError("There is no '{}' language. Try 'en' or 'fr'.".format(args.language))
     else:
         print("Selected Language : English")
         
+    #WORD EMBEDDING
+    
+    emb = 'w2v'
+    
+    if args.embedding != None:
+        emb = args.embedding
+        
     if language == 'eng':
-        w2v = src.datasets.read_english_w2v(lim=10000)
-        train_texts, train_labels = src.datasets.read_imdb()
+        if emb == 'w2v':
+            print("Selected Embedding : Word2Vec")
+            wemb = src.datasets.read_english_w2v(**config['embedding']['w2v'])
+            train_texts, train_labels = src.datasets.read_imdb()
+        elif emb = 'BERT':
+            print("Selected Embedding : BERT")
+            raise Exception("Not Implemented Yet.")
+        else:
+            raise NameError("There is no '{}' language. Try 'en' or 'fr'.".format(args.language))
+            
     elif language == 'fr':
         raise
         
@@ -65,9 +81,8 @@ if __name__ == "__main__":
         detector_params['k'] = int(args.k)
     
     detector = import_from_path(config["model"]["filepath"],
-                                config["model"]["class"])(w2v, **detector_params)
+                                config["model"]["class"])(wemb, **detector_params)
     
-    #detector = kmeans.KMeansAspectDetector(w2v, k=args.k)
     res = detector.predict_sentence(sentence)
     
     print(res)
