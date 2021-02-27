@@ -9,7 +9,7 @@ model:
         
 embedding:
     w2v:
-        lim: 1000
+        lim: 10000
     
 
 sentences:
