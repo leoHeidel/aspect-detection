@@ -8,7 +8,7 @@ class KMeansAspectDetector:
     """
     Detect aspect by applying K means to the sets of word vectors.
     """
-    def __init__(self, w2v, k, language="english", dist="L2"):
+    def __init__(self, w2v, k = 5, language="english", dist="L2"):
         """
         k : the number of predicted aspects
         dist : L2 or cosin, distance to use to retrive a word from a vector
@@ -17,7 +17,7 @@ class KMeansAspectDetector:
         valid_words = [word for word in w2v.index if word not in self.stop_words and word.isalnum()]
         self.w2v = w2v.loc[valid_words]
         self.w2v_words = set(valid_words)
-        self.k = 5
+        self.k = k
         self.dist = dist
         
     def transform_sentence(self, sentence):
