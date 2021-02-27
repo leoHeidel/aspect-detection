@@ -61,7 +61,7 @@ if __name__ == "__main__":
             print("Selected Embedding : Word2Vec")
             wemb = src.datasets.read_english_w2v(**config['embedding']['w2v'])
             train_texts, train_labels = src.datasets.read_imdb()
-        elif emb = 'BERT':
+        elif emb == 'BERT':
             print("Selected Embedding : BERT")
             raise Exception("Not Implemented Yet.")
         else:
