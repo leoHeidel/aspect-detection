@@ -45,7 +45,9 @@ if __name__ == "__main__":
             print("Selected Language : English")
         else:
             raise NameError("There is no {} language. Try 'en' or 'fr'.")
-    
+    else:
+        print("Selected Language : English")
+        
     if language == 'eng':
         w2v = src.datasets.read_english_w2v(lim=10000)
         train_texts, train_labels = src.datasets.read_imdb()
