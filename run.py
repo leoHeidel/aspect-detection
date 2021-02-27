@@ -24,7 +24,7 @@ if __name__ == "__main__":
     #GET THE ARGUMENTS
     parser = argparse.ArgumentParser(description = __doc__)
     parser.add_argument("-c", "--config", help = "File path to the config file")
-    parser.add_argument("-l", "--language", help = "Language on which we perform aspect extraction")
+    parser.add_argument("-l", "--language", help = "Language on which we perform aspect extraction : 'fr' or 'eng' ")
     parser.add_argument("-k", help="Number of aspects")
     parser.add_argument("-s", "--sentence", required=True)
     args = parser.parse_args()
@@ -33,9 +33,26 @@ if __name__ == "__main__":
     with open(args.config) as config_file:
         config = yaml.safe_load(config_file)
         
-    #LOAD LANGUAGE        
-    w2v = src.datasets.read_english_w2v(lim=10000)
-    train_texts, train_labels = src.datasets.read_imdb()
+    #LOAD LANGUAGE
+    language = 'eng'
+    
+    if args.language != None:
+        if args.language == 'fr':
+            print("Selected Language : French")
+            language = 'fr'
+            raise Exception("Not Implemented Yet.")
+        elif args.language == 'eng':
+            print("Selected Language : English")
+        else:
+            raise NameError("There is no {} language. Try 'en' or 'fr'.")
+    
+    if language == 'eng':
+        w2v = src.datasets.read_english_w2v(lim=10000)
+        train_texts, train_labels = src.datasets.read_imdb()
+    elif language == 'fr':
+        raise
+        
+    #LOAD TEXT TO TEST ON 
         
     sentence = config['sentences']['sentence%s'%args.sentence]
     
