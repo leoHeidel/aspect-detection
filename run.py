@@ -43,6 +43,7 @@ if __name__ == "__main__":
     detector_params = config["model"]["parameters"]
     
     if args.k != None:
+        print(type(args.k))
         detector_params['k'] = args.k
     
     detector = import_from_path(config["model"]["filepath"],
