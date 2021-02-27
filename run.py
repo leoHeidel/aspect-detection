@@ -44,7 +44,7 @@ if __name__ == "__main__":
         elif args.language == 'eng':
             print("Selected Language : English")
         else:
-            raise NameError("There is no {} language. Try 'en' or 'fr'.")
+            raise NameError("There is no {} language. Try 'en' or 'fr'.".format(args.language)}
     else:
         print("Selected Language : English")
         
