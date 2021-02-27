@@ -34,7 +34,7 @@ if __name__ == "__main__":
         
     sentence = config['sentences']['sentence%s'%args.sentence]
     
-    
+    print(config["model"]["parameters"])
     detector = import_from_path(config["model"]["filepath"],
                                 config["model"]["class"])(w2v, **config["model"]["parameters"])
     
