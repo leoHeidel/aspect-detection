@@ -4,8 +4,20 @@ import argparse
 import yaml
 
 import src
-import kmeans
+from importlib import import_module
 
+def import_from_path(path_to_module, obj_name = None):
+    """
+    Import an object from a module based on the filepath of
+    the module and the string name of the object.
+    If obj_name is None, return the module instead.
+    """
+    module_name = path_to_module.replace("/",".").strip(".py")
+    module = import_module(module_name)
+    if obj_name == None:
+        return module
+    obj = getattr(module, obj_name)
+    return obj
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = __doc__)
@@ -22,7 +34,11 @@ if __name__ == "__main__":
         
     sentence = config['sentences']['sentence%s'%args.sentence]
     
-    detector = kmeans.KMeansAspectDetector(w2v, k=args.k)
+    
+    detector = import_from_path(config["model"]["filepath"],
+                                config["model"]["class"])(w2v, **config["model"]["parameters"])
+    
+    #detector = kmeans.KMeansAspectDetector(w2v, k=args.k)
     res = detector.predict_sentence(sentence)
     
     print(res)
