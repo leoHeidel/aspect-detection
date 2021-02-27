@@ -65,7 +65,7 @@ if __name__ == "__main__":
             print("Selected Embedding : BERT")
             raise Exception("Not Implemented Yet.")
         else:
-            raise NameError("There is no '{}' language. Try 'en' or 'fr'.".format(args.language))
+            raise NameError("There is no '{}' embedding. Try 'w2v' or 'BERT'.".format(args.embedding))
             
     elif language == 'fr':
         raise
