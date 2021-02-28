@@ -4,6 +4,8 @@ import pathlib
 import numpy as np
 import pandas as pd
 import tqdm
+import pickle
+from gensim.models import KeyedVectors
 
 
 def read_imdb(path="datasets/aclImdb" , split="train"):
@@ -20,6 +22,22 @@ def read_imdb(path="datasets/aclImdb" , split="train"):
             texts.append(text_file.read_text())
             labels.append(0 if label_dir is "neg" else 1)
 
+    return texts, labels
+    
+def read_allocine(path="datasets/data" , split="train"):
+    """
+    Get the allocine dataset for classification.
+    split is either train, test or val
+    """
+    
+    assert split in ['train', 'val', 'test']
+    
+    with (open("datasets/data/allocine_dataset.pickle", "rb")) as f:
+        data = pickle.load(f)
+        
+    texts = list(data[split + '_set']['review'])
+    labels = list(data[split + '_set']['polarity'])
+    
     return texts, labels
 
 
@@ -46,4 +64,40 @@ def read_english_w2v(path="datasets/wiki-news-300d-1M.vec", lim=100000):
             if current >= nb_words:
                 break
     return pd.DataFrame(vectors, index=words)
+    
+    
+def read_french_w2v(path='datasets/frWac_non_lem_no_postag_no_phrase_200_skip_cut100.bin', lim=100000):
+    """
+    Read word 2 vec into a pandas DataFrame
+    Limite the total number of words for performance issues
+    """
+    
+    model = KeyedVectors.load_word2vec_format(path, binary=True, unicode_errors="ignore")
+    
+    list_of_ranked_words = model.index2word
+    voc_size = len(list_of_ranked_words)
+    nb_words = min(lim, voc_size)
+    print(nb_words)
+    dims = model.word_vec('singe').shape[0]
+    
+    words = []
+    vectors = np.zeros((nb_words, dims), dtype=np.float32)
+    
+    for k in tqdm.tqdm(range(nb_words)):
+        w = list_of_ranked_words[k]
+        vec = model.word_vec(w)
+        vectors[k] = list(vec)
+        words.append(w)
+    return pd.DataFrame(vectors, index=words)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
