@@ -41,7 +41,6 @@ if __name__ == "__main__":
         if args.language == 'fr':
             print("Selected Language : French")
             language = 'fr'
-            raise Exception("Not Implemented Yet.")
         elif args.language == 'eng':
             print("Selected Language : English")
         else:
@@ -68,11 +67,19 @@ if __name__ == "__main__":
             raise NameError("There is no '{}' embedding. Try 'w2v' or 'BERT'.".format(args.embedding))
             
     elif language == 'fr':
-        raise
+        if emb == 'w2v':
+            print("Selected Embedding : Word2Vec")
+            wemb = src.datasets.read_french_w2v(**config['embedding']['w2v'])
+            train_texts, train_labels = src.datasets.read_allocine()
+        elif emb == 'BERT':
+            print("Selected Embedding : BERT")
+            raise Exception("Not Implemented Yet.")
+        else:
+            raise NameError("There is no '{}' embedding. Try 'w2v' or 'BERT'.".format(args.embedding))
         
     #LOAD TEXT TO TEST ON 
         
-    sentence = config['sentences']['sentence%s'%args.sentence]
+    sentence = config[language]['sentences']['sentence%s'%args.sentence]
     
     #LOAD DETECTOR
     detector_params = config["model"]["parameters"]
