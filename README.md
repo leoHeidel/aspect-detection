@@ -15,6 +15,8 @@
   - Baseline with k-means **1 March**
   - With roBERTa and camemBERT **15 March**
 
+- Make code to get embedding out of text, using either w2v or Bert **11 March**
+
 ## Deadlines 
 
 - 4 pager Report March 21 2021 (Sunday, can be modified)
