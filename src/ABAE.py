@@ -130,7 +130,7 @@ class ABAE:
         else:
             raise Exception("Not Implemented Yet.")
         
-        self.args = args
+        self.args = kwargs
         
         self.dataset = dataset
         
