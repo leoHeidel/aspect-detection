@@ -28,7 +28,7 @@ if __name__ == "__main__":
     parser.add_argument("-l", "--language", help = "Language on which we perform aspect extraction : 'fr' or 'eng' ")
     parser.add_argument("-k", help="Number of aspects")
     parser.add_argument("-s", "--sentence")
-    parser.add_argument("-t", "--train", default = False)
+    parser.add_argument("-t", "--train", action='store_true')
     args = parser.parse_args()
 
     #LOAD CONFIG FILE
