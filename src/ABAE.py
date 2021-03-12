@@ -17,7 +17,7 @@ class ABAENet(nn.Module):
     """
     Neural Net associated to Attention Based Aspect Extraction
     """
-    def __init__(self, K, max_length, dim_emb = 200, **kargs):
+    def __init__(self, K, max_length, dim_emb = 200, **kwargs):
         super(ABAENet, self).__init__()
         
         self.max_length = max_length #maximal number of token per sentence
@@ -130,7 +130,7 @@ class ABAE:
         else:
             raise Exception("Not Implemented Yet.")
         
-        self.args = kwargs
+        self.kwargs = kwargs
         
         self.dataset = dataset
         
@@ -184,9 +184,9 @@ class ABAE:
     def train(self, num_epochs = 10, silent = False, path = 'models/ABAE.pt'):
         print("Initializing Training ...")
         
-        train_loader = torch.utils.data.DataLoader(self._create_dataset(), batch_size=args.batch_size, shuffle=True, num_workers=1)
+        train_loader = torch.utils.data.DataLoader(self._create_dataset(), batch_size=self.kwargs.batch_size, shuffle=True, num_workers=1)
         
-        neg_loader = torch.utils.data.DataLoader(self._create_dataset(), batch_size=args.neg_m, shuffle=True, num_workers=1)
+        neg_loader = torch.utils.data.DataLoader(self._create_dataset(), batch_size=self.kwargs.neg_m, shuffle=True, num_workers=1)
         
         optimizer = optim.Adam(self.net.parameters(), lr=lr, betas=(0.9, 0.999), weight_decay=reg)
         
