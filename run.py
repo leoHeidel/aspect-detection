@@ -27,7 +27,8 @@ if __name__ == "__main__":
     parser.add_argument('-e', "--embedding", help = "Which word embedding to use. 'w2v' or 'BERT' ")
     parser.add_argument("-l", "--language", help = "Language on which we perform aspect extraction : 'fr' or 'eng' ")
     parser.add_argument("-k", help="Number of aspects")
-    parser.add_argument("-s", "--sentence", required=True)
+    parser.add_argument("-s", "--sentence")
+    parser.add_argument("-t", "--train", default = False)
     args = parser.parse_args()
 
     #LOAD CONFIG FILE
@@ -78,8 +79,8 @@ if __name__ == "__main__":
             raise NameError("There is no '{}' embedding. Try 'w2v' or 'BERT'.".format(args.embedding))
         
     #LOAD TEXT TO TEST ON 
-        
-    sentence = config[language]['sentences']['sentence%s'%args.sentence]
+    if args.sentence != None:
+        sentence = config[language]['sentences']['sentence%s'%args.sentence]
     
     #LOAD DETECTOR
     detector_params = config["model"]["parameters"]
@@ -89,7 +90,9 @@ if __name__ == "__main__":
     
     detector = import_from_path(config["model"]["filepath"],
                                 config["model"]["class"])(wemb, **detector_params)
-    
-    res = detector.predict_sentence(sentence)
+    if args.train:
+        detector.train()
+    else:
+        res = detector.predict_sentence(sentence)
     
     print(res)

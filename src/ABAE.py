@@ -81,10 +81,7 @@ class TextData(Dataset):
         self.transform = transform
         self.max_length = max_length
         
-        if dataset == 'imbd':
-            self.data, _ = datasets.read_imdb()
-        else:
-            raise Exception("Not Implemented Yet.")
+        self.data = dataset
             
     def __padding__(self, np_arr):
         """
@@ -99,7 +96,7 @@ class TextData(Dataset):
         
         n2add = self.max_length - n_words
         
-        return np.concatenate((np_arr, np.zeros((n2add, d)), axis = 0))
+        return np.concatenate((np_arr, np.zeros((n2add, d))), axis = 0)
         
     def __getitem__(self, index):
 
@@ -118,7 +115,7 @@ class ABAE:
     """
         Detect aspect by applying ABAE.
     """
-    def __init__(self, emb_name, emb, k = 5, dataset = 'imbd', language="english", dist="L2", *args):
+    def __init__(self, emb_name, emb, dataset = None, k = 5, language="english", dist="L2", **kwargs):
         
         self.emb_name = emb_name
         self.k = k
