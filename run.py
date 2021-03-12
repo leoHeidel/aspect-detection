@@ -88,11 +88,13 @@ if __name__ == "__main__":
     if args.k != None:
         detector_params['k'] = int(args.k)
     
-    detector = import_from_path(config["model"]["filepath"],
-                                config["model"]["class"])(wemb, **detector_params)
     if args.train:
+        detector = import_from_path(config["model"]["filepath"],
+                                config["model"]["class"])(wemb, dataset = train_texts, **detector_params)
         detector.train()
     else:
+        detector = import_from_path(config["model"]["filepath"],
+                                config["model"]["class"])(wemb, **detector_params)
         res = detector.predict_sentence(sentence)
     
     print(res)
