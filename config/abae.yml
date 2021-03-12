@@ -8,6 +8,7 @@ model:
         neg_m: 5
         batch_size: 50
         emb_name: w2v
+        lr: 0.0001
         
         
 embedding:
