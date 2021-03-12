@@ -115,7 +115,7 @@ class ABAE:
     """
         Detect aspect by applying ABAE.
     """
-    def __init__(self, emb_name, emb, dataset = None, k = 5, language="english", dist="L2", **kwargs):
+    def __init__(self, emb, dataset = None, k = 5, emb_name = 'w2v', language="english", dist="L2", **kwargs):
         
         self.emb_name = emb_name
         self.k = k
