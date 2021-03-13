@@ -42,6 +42,9 @@ class ABAENet(nn.Module):
         #Attention Weights
         y_s = torch.mean(e_w, axis = 1)
         
+        print("e_w ", e_w.shape)
+        print("y_s ", y_s.shape)
+        
         di = torch.bmm(e_w, self.linM(y_s).view(-1, self.dim_emb, 1))
         
         a = torch.softmax(di.squeeze(), axis = 1)
