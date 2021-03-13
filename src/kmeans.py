@@ -4,6 +4,8 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from sklearn.cluster import KMeans
 
+import pandas as pd
+
 class KMeansAspectDetector:
     """
     Detect aspect by applying K means to the sets of word vectors.
@@ -66,14 +68,23 @@ class KMeansAspectDetector:
     
     def create_dataset(self):
         
+        print("Creating Dataset ... ")
+        
         N_data = len(self.dataset)
         
         dfs = []
         for idx, review in enumerate(self.dataset):
             dfs.append(self.transform_sentence(review))
+            if idx%2500:
+                print("Progess : ", int(10000*(idx/N_data))/100, " % done ")
+        
         df = pd.concat(dfs)#.astype('int32')
+        
         print("df shape ", df.shape)
         print(df.head())
+        
+        print("Dataset Created !")
+        
         return df
         
            
