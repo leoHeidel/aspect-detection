@@ -75,7 +75,7 @@ class KMeansAspectDetector:
         dfs = []
         for idx, review in enumerate(self.dataset):
             dfs.append(self.transform_sentence(review))
-            if idx%2500:
+            if idx%2500 == 0:
                 print("Progess : ", int(10000*(idx/N_data))/100, " % done ")
         
         df = pd.concat(dfs)#.astype('int32')
