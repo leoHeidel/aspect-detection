@@ -27,6 +27,7 @@ class ABAENet(nn.Module):
         self.max_length = max_length #maximal number of token per sentence
         self.dim_emb = dim_emb #Dim of the embedding
         self.K = K #number of aspects we want to extract
+        self.reg = reg
         
         self.linM = nn.Linear(dim_emb, dim_emb, bias = False)
         self.linW = nn.Linear(dim_emb, K)
