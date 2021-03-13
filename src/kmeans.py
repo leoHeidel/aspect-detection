@@ -10,7 +10,7 @@ class KMeansAspectDetector:
     """
     Detect aspect by applying K means to the sets of word vectors.
     """
-    def __init__(self, w2v, dataset = None, k = 5, language="english", dist="L2"):
+    def __init__(self, w2v, dataset = None, k = 5, language="english", dist="L2", lim_dataset = 5*10**5):
         """
         k : the number of predicted aspects
         dist : L2 or cosin, distance to use to retrive a word from a vector
@@ -24,6 +24,7 @@ class KMeansAspectDetector:
         self.dataset = dataset
         self.k_means = None
         self.raw_aspects = None
+        self.lim_dataset = lim_dataset
         
     def transform_sentence(self, sentence):
         """
@@ -72,16 +73,17 @@ class KMeansAspectDetector:
         
         N_data = len(self.dataset)
         
-        dfs = []
+        dfs, total_l = [], 0
         for idx, review in enumerate(self.dataset):
-            dfs.append(self.transform_sentence(review))
-            if idx%(N_data//10) == 0:
+            df = self.transform_sentence(review)
+            total_l += len(df)
+            dfs.append(df)
+            if total_l > self.lim_dataset:
+                break
+            if idx%(min(N_data, self.lim_dataset)//10) == 0:
                 print("Progess : ", int(10000*(idx/N_data))/100, " % done ")
         
-        df = pd.concat(dfs)#.astype('int32')
-        
-        print("df shape ", df.shape)
-        print(df.head())
+        df = pd.concat(dfs).astype('int32')
         
         print("Dataset Created !")
         
@@ -93,9 +95,9 @@ class KMeansAspectDetector:
         Predict aspects for single sentence.
         """
         
-        print("Training Started !")
-        
         data = self.create_dataset()
+        
+        print("Training Started !")
         
         self.k_means = KMeans(self.k).fit(data)
         self.raw_aspects = self.k_means.cluster_centers_
