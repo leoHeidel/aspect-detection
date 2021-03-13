@@ -42,9 +42,6 @@ class ABAENet(nn.Module):
         #Attention Weights
         y_s = torch.mean(e_w, axis = 1)
         
-        print("e_w ", e_w.shape)
-        print("y_s ", y_s.shape)
-        
         di = torch.bmm(e_w, self.linM(y_s).view(-1, self.dim_emb, 1))
         
         a = torch.softmax(di.squeeze(), axis = 1)
@@ -141,7 +138,7 @@ class ABAE:
         
         self.dataset = dataset
         
-        self.net = ABAENet(K = k, max_length = 100, dim_emb = 200).cuda() # /!\ to change ... /!\
+        self.net = ABAENet(K = k, max_length = kwargs['max_length'], dim_emb = kwargs['dim_emb']).cuda() # /!\ to change ... /!\
         
         
     def sentence_emb_w2v(self, sentence):
@@ -156,13 +153,13 @@ class ABAE:
     def _create_dataset(self):
         
         if self.emb_name == 'w2v':
-            text_dataset = TextData(self.dataset, transform = self.sentence_emb_w2v, max_length = 512)
+            text_dataset = TextData(self.dataset, transform = self.sentence_emb_w2v, max_length = self.kwargs['max_length'])
         else:
             raise Exception("Not Implemented Yet.")
         
         return text_dataset
         
-    def _train_one_epoch(self, train_loader, neg_loader, optimizer, silent = False):
+    def _train_one_epoch(self, train_loader, neg_loader, optimizer, silent = True):
         
         data_size = len(train_loader)
         
@@ -188,7 +185,7 @@ class ABAE:
         return loss_ep
         
         
-    def train(self, num_epochs = 10, silent = False, path = 'models/ABAE.pt'):
+    def train(self, num_epochs = 10, silent = True, path = 'models/ABAE.pt'):
         print("Initializing Training ...")
         
         train_loader = torch.utils.data.DataLoader(self._create_dataset(), batch_size=self.kwargs['batch_size'], shuffle=True, num_workers=1)
@@ -205,7 +202,7 @@ class ABAE:
         print('')
         
         for ep in tqdm.tqdm(range(num_epochs)):
-            loss_ep = self._train_one_epoch(train_loader, neg_loader, optimizer, silent = False)
+            loss_ep = self._train_one_epoch(train_loader, neg_loader, optimizer, silent = True)
             print('Epoch: {}/{}, Loss: {:.4f}'.format(ep, num_epochs, loss_ep))
         
         print('')
