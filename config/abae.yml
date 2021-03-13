@@ -4,20 +4,20 @@ model:
     filepath: src/ABAE.py
     class: ABAE
     parameters:
-        k: 7
-        neg_m: 5
+        k: 14
+        neg_m: 20
         batch_size: 50
         emb_name: w2v
-        lr: 0.0001
+        lr: 0.001
         dim_emb: 300
         max_length: 512
         epochs: 15
-        reg: 0.1
+        reg: 1.
         
         
 embedding:
     w2v:
-        lim: 100000
+        lim: 9000
     
 
 eng:

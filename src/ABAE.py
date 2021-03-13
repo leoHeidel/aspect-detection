@@ -248,9 +248,9 @@ class ABAE:
         model = self.net
         model.load_state_dict(torch.load(model_path))
         
-        T = model.get_T().cpu().numpy() 
-        aspects_vectors = T.transpose(0,1)
-       
+        T = model.get_T().detach().cpu().numpy() 
+        aspects_vectors = T.transpose(1,0)
+        aspects = []
         for i in range(self.k):
             aspect = self._retrieve_word(aspects_vectors[i])
             aspects.append(aspect)

@@ -87,6 +87,8 @@ if __name__ == "__main__":
     
     if args.k != None:
         detector_params['k'] = int(args.k)
+        
+    res = []
     
     if args.train:
         detector = import_from_path(config["model"]["filepath"],
