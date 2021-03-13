@@ -85,7 +85,7 @@ class ABAENet(nn.Module):
         T = self.get_T()
         T_n = T/T.sum(axis=0)[None, :] #rk : T is, compare to the article, T^t
         
-        U = torch.norm(torch.mm(torch.transpose(T_n, 0, 1), T_n) - torch.eye(self.K))
+        U = torch.norm(torch.mm(torch.transpose(T_n, 0, 1), T_n) - torch.eye(self.K).cuda()) #Not clean but you know ...
         
         return U
         
@@ -137,6 +137,7 @@ class ABAE:
         self.emb_name = emb_name
         self.k = k
         self.language = language
+        self.dist = dist
         
         if self.emb_name == 'w2v':
             self.w2v = emb
@@ -226,6 +227,35 @@ class ABAE:
         print("Saving Model Weights ...")
         torch.save(self.net.state_dict(), path)
         print("Done ! ")
+        
+        
+    def _retrieve_word(self, aspects_vector):
+        """
+        Retrieve word closest to a vector
+        """
+        if self.dist == "cosin":
+            scores = (self.w2v @ aspects_vector)
+        else:
+            assert self.dist == "L2", f"Unknown distance {self.dist}"
+            diff = self.w2v - aspects_vector
+            scores = -(diff*diff).sum(axis=1)
+            
+        return scores.index[scores.argmax()]
+        
+        
+    def predict_sentence(self, sentence, model_path = 'models/ABAE.pt'):
+        #Load Model
+        model = self.net
+        model.load_state_dict(torch.load(model_path))
+        
+        T = model.get_T().cpu().numpy() 
+        aspects_vectors = T.transpose(0,1)
+       
+        for i in range(self.k):
+            aspect = self._retrieve_word(aspects_vectors[i])
+            aspects.append(aspect)
+        
+        return aspects 
         
         
         
