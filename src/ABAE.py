@@ -108,7 +108,7 @@ class TextData(Dataset):
         emb_sentence = self.transform(sentence)
         pad_sentence = self.__padding__(emb_sentence)
         
-        return torch.from_numpy(pad_sentence)
+        return torch.from_numpy(pad_sentence).float()
 
     def __len__(self):
         return len(self.data)
@@ -182,7 +182,7 @@ class ABAE:
             
             loss_ep += loss.cpu().float().item()
         
-        return loss_ep
+        return loss_ep/data_size
         
         
     def train(self, num_epochs = 10, silent = True, path = 'models/ABAE.pt'):
@@ -201,7 +201,7 @@ class ABAE:
         print("####################################################")
         print('')
         
-        for ep in tqdm.tqdm(range(num_epochs)):
+        for ep in tqdm.tqdm(range(num_epochs), disable = silent):
             loss_ep = self._train_one_epoch(train_loader, neg_loader, optimizer, silent = True)
             print('Epoch: {}/{}, Loss: {:.4f}'.format(ep, num_epochs, loss_ep))
         
