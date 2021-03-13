@@ -88,11 +88,9 @@ if __name__ == "__main__":
     
     if args.k != None:
         detector_params['k'] = int(args.k)
-    if language == 'fr':
-        try:
-            detector_params['dim_emb'] = 200
-        except:
-            pass
+    if language == 'fr' and ('abae' in args.config):
+        detector_params['dim_emb'] = 200
+        
         
     
     detector = import_from_path(config["model"]["filepath"],
