@@ -11,6 +11,8 @@ model:
         lr: 0.0001
         dim_emb: 300
         max_length: 512
+        epochs: 15
+        reg: 0.1
         
         
 embedding:

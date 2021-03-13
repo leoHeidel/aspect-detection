@@ -21,7 +21,7 @@ class ABAENet(nn.Module):
     """
     Neural Net associated to Attention Based Aspect Extraction
     """
-    def __init__(self, K, max_length, dim_emb = 300, **kwargs):
+    def __init__(self, K, max_length, dim_emb = 300, reg = 1., **kwargs):
         super(ABAENet, self).__init__()
         
         self.max_length = max_length #maximal number of token per sentence
@@ -78,6 +78,18 @@ class ABAENet(nn.Module):
         loss = torch.max(torch.zeros_like(neg), torch.ones_like(neg) - pos[:, None] + neg)
 
         return torch.sum(loss)
+        
+    def RegLoss(self):
+        
+        T = self.get_T()
+        T_n = T/T.sum(axis=0)[None, :] #rk : T is, compare to the article, T^t
+        
+        U = torch.norm(torch.mm(torch.transpose(T_n, 0, 1), T_n) - torch.eye(self.K))
+        
+        return U
+        
+    def TotalLoss(self, e_w, e_wn):
+        return self.MaxMargin(e_w, e_wn) + self.reg*self.RegLoss()
 
 
 class TextData(Dataset):
@@ -138,7 +150,7 @@ class ABAE:
         
         self.dataset = dataset
         
-        self.net = ABAENet(K = k, max_length = kwargs['max_length'], dim_emb = kwargs['dim_emb']).cuda() # /!\ to change ... /!\
+        self.net = ABAENet(K = k, max_length = kwargs['max_length'], dim_emb = kwargs['dim_emb'], reg = kwargs['reg']).cuda() # /!\ to change ... /!\
         
         
     def sentence_emb_w2v(self, sentence):
@@ -175,7 +187,7 @@ class ABAE:
             #Loss & Optim
             optimizer.zero_grad()
             
-            loss = self.net.MaxMargin(e_w, e_wn) 
+            loss = self.net.TotalLoss(e_w, e_wn) 
 
             loss.backward()
             optimizer.step()
@@ -185,8 +197,10 @@ class ABAE:
         return loss_ep/data_size
         
         
-    def train(self, num_epochs = 10, silent = True, path = 'models/ABAE.pt'):
+    def train(self, silent = True, path = 'models/ABAE.pt'):
         print("Initializing Training ...")
+        
+        num_epochs = self.kwargs['epochs']
         
         train_loader = torch.utils.data.DataLoader(self._create_dataset(), batch_size=self.kwargs['batch_size'], shuffle=True, num_workers=1)
         
@@ -209,7 +223,7 @@ class ABAE:
         print("####################################################")
         print('')
         print("Saving Model Weights ...")
-        torch.save(net.state_dict(), path)
+        torch.save(self.net.state_dict(), path)
         print("Done ! ")
         
         
