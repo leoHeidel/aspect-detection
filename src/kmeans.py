@@ -79,8 +79,9 @@ class KMeansAspectDetector:
             total_l += len(df)
             dfs.append(df)
             if total_l > self.lim_dataset:
+                print("Lim dataset reached !")
                 break
-            if idx%(min(N_data, self.lim_dataset)//10) == 0:
+            if idx%(N_data//10) == 0:
                 print("Progess : ", int(10000*(idx/N_data))/100, " % done ")
         
         df = pd.concat(dfs).astype('int32')

@@ -5,7 +5,7 @@ model:
     class: KMeansAspectDetector
     parameters:
         k: 7
-        lim_dataset: 500000
+        lim_dataset: 1000000
         
         
 embedding:
