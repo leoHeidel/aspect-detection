@@ -8,7 +8,7 @@ class KMeansAspectDetector:
     """
     Detect aspect by applying K means to the sets of word vectors.
     """
-    def __init__(self, w2v, k = 5, language="english", dist="L2"):
+    def __init__(self, w2v, dataset = None, k = 5, language="english", dist="L2"):
         """
         k : the number of predicted aspects
         dist : L2 or cosin, distance to use to retrive a word from a vector
@@ -19,6 +19,9 @@ class KMeansAspectDetector:
         self.w2v_words = set(valid_words)
         self.k = k
         self.dist = dist
+        self.dataset = dataset
+        self.k_means = None
+        self.raw_aspects = None
         
     def transform_sentence(self, sentence):
         """
@@ -31,9 +34,8 @@ class KMeansAspectDetector:
         filtered_sentence = [word for word in filtered_sentence if word.isalnum()]
         filtered_sentence = [word for word in filtered_sentence if word in self.w2v_words]
         vectors = self.w2v.loc[filtered_sentence]
-        k_means = KMeans(self.k).fit(vectors)
-        raw_aspects = k_means.cluster_centers_
-        return raw_aspects
+        return vectors
+
     
     def _retrieve_word(self, aspects_vector):
         """
@@ -52,9 +54,73 @@ class KMeansAspectDetector:
         """
         Predict aspects for single sentence.
         """
-        aspects_vectors = self.transform_sentence(sentence)
+        vectors = self.transform_sentence(sentence)
+        k_means = KMeans(self.k).fit(vectors)
+        aspects_vectors = k_means.cluster_centers_
+        
         aspects = []
         for i in range(self.k):
             aspect = self._retrieve_word(aspects_vectors[i])
             aspects.append(aspect)
         return aspects 
+    
+    def create_dataset(self):
+        
+        N_data = len(self.dataset)
+        
+        dfs = []
+        for idx, review in enumerate(self.dataset):
+            dfs.append(self.transform_sentence(review))
+        df = pd.concat(dfs)#.astype('int32')
+        print("df shape ", df.shape)
+        print(df.head())
+        return df
+        
+           
+    def train(self):
+        """
+        Predict aspects for single sentence.
+        """
+        
+        print("Training Started !")
+        
+        data = self.create_dataset()
+        
+        self.k_means = KMeans(self.k).fit(data)
+        self.raw_aspects = self.k_means.cluster_centers_
+        
+        print("Done !")
+        
+        
+    def predict_aspect(self):
+        
+        aspects_vectors = self.raw_aspects
+        
+        aspects = []
+        for i in range(self.k):
+            aspect = self._retrieve_word(aspects_vectors[i])
+            aspects.append(aspect)
+        return aspects
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

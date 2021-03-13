@@ -81,6 +81,7 @@ if __name__ == "__main__":
     #LOAD TEXT TO TEST ON 
     if args.sentence != None:
         sentence = config[language]['sentences']['sentence%s'%args.sentence]
+        pred_sentence = True
     
     #LOAD DETECTOR
     detector_params = config["model"]["parameters"]
@@ -88,15 +89,25 @@ if __name__ == "__main__":
     if args.k != None:
         detector_params['k'] = int(args.k)
         
-    res = []
+    
+    detector = import_from_path(config["model"]["filepath"],
+                                config["model"]["class"])(wemb, dataset = train_texts, **detector_params)
     
     if args.train:
-        detector = import_from_path(config["model"]["filepath"],
-                                config["model"]["class"])(wemb, dataset = train_texts, **detector_params)
         detector.train()
-    else:
-        detector = import_from_path(config["model"]["filepath"],
-                                config["model"]["class"])(wemb, **detector_params)
+        res = detector.predict_aspect()
+        print(res)
+    elif pred_sentence:
         res = detector.predict_sentence(sentence)
+        print(res)
+    else:
+        res = detector.predict_aspect()
+        print(res)
+        
+        
+        
+        
+        
+        
     
-    print(res)
+    

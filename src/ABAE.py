@@ -243,7 +243,7 @@ class ABAE:
         return scores.index[scores.argmax()]
         
         
-    def predict_sentence(self, sentence, model_path = 'models/ABAE.pt'):
+    def predict_aspect(self, model_path = 'models/ABAE.pt'):
         #Load Model
         model = self.net
         model.load_state_dict(torch.load(model_path))
