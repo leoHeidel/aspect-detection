@@ -9,6 +9,8 @@ model:
         batch_size: 50
         emb_name: w2v
         lr: 0.0001
+        dim_emb: 300
+        max_length: 512
         
         
 embedding:
