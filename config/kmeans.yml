@@ -5,6 +5,7 @@ model:
     class: KMeansAspectDetector
     parameters:
         k: 7
+        dist: cosin
         lim_dataset: 1000000
         
         

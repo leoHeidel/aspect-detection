@@ -13,6 +13,7 @@ model:
         max_length: 512
         epochs: 15
         reg: 1.
+        dist: cosin
         
         
 embedding:
