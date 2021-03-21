@@ -11,7 +11,7 @@ import torch.optim as optim
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
-import tqdm.notebook as tqdm
+import tqdm as tqdm
 import numpy as np
 
 import datasets
@@ -258,9 +258,7 @@ class ABAE:
         return aspects 
         
         
-        
-        
-        
+  
         
         
         

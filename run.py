@@ -23,11 +23,17 @@ if __name__ == "__main__":
     
     #GET THE ARGUMENTS
     parser = argparse.ArgumentParser(description = __doc__)
-    parser.add_argument("-c", "--config", help = "File path to the config file")
-    parser.add_argument('-e', "--embedding", help = "Which word embedding to use. 'w2v' or 'BERT' ")
-    parser.add_argument("-l", "--language", help = "Language on which we perform aspect extraction : 'fr' or 'eng' ")
-    parser.add_argument("-k", help="Number of aspects")
-    parser.add_argument("-s", "--sentence")
+    parser.add_argument("-c", "--config", help = "File path to the config file", default="config/kmeans.yml")
+    parser.add_argument('-e', "--embedding", 
+                        help = "Which word embedding to use. 'w2v' or 'BERT'", 
+                        default="w2v",
+                        choices=['w2v', 'BERT'])
+    parser.add_argument("-l", "--language", 
+                        help = "Language on which we perform aspect extraction : 'fr' or 'eng'.", 
+                        default="eng",
+                        choices=['eng', 'fr'])
+    parser.add_argument("-k", help="Number of aspects", default=5)
+    parser.add_argument("-s", "--sentence", default=0)
     parser.add_argument("-t", "--train", action='store_true')
     args = parser.parse_args()
 
@@ -35,27 +41,11 @@ if __name__ == "__main__":
     with open(args.config) as config_file:
         config = yaml.safe_load(config_file)
         
-    #LOAD LANGUAGE
-    language = 'eng'
-    
-    if args.language != None:
-        if args.language == 'fr':
-            print("Selected Language : French")
-            language = 'fr'
-        elif args.language == 'eng':
-            print("Selected Language : English")
-        else:
-            raise NameError("There is no '{}' language. Try 'en' or 'fr'.".format(args.language))
-    else:
-        print("Selected Language : English")
-        
-    #WORD EMBEDDING
-    
-    emb = 'w2v'
-    
-    if args.embedding != None:
-        emb = args.embedding
-        
+    #LOAD LANGUAGE  
+    language = args.language
+
+    #WORD EMBEDDING    
+    emb = args.embedding
     if language == 'eng':
         if emb == 'w2v':
             print("Selected Embedding : Word2Vec")
@@ -64,10 +54,8 @@ if __name__ == "__main__":
         elif emb == 'BERT':
             print("Selected Embedding : BERT")
             raise Exception("Not Implemented Yet.")
-        else:
-            raise NameError("There is no '{}' embedding. Try 'w2v' or 'BERT'.".format(args.embedding))
-            
-    elif language == 'fr':
+    else:
+        #Language is fr
         if emb == 'w2v':
             print("Selected Embedding : Word2Vec")
             wemb = src.datasets.read_french_w2v(**config['embedding']['w2v'])
@@ -75,14 +63,7 @@ if __name__ == "__main__":
         elif emb == 'BERT':
             print("Selected Embedding : BERT")
             raise Exception("Not Implemented Yet.")
-        else:
-            raise NameError("There is no '{}' embedding. Try 'w2v' or 'BERT'.".format(args.embedding))
-        
-    #LOAD TEXT TO TEST ON 
-    if args.sentence != None:
-        sentence = config[language]['sentences']['sentence%s'%args.sentence]
-        pred_sentence = True
-    
+
     #LOAD DETECTOR
     detector_params = config["model"]["parameters"]
     
@@ -90,8 +71,6 @@ if __name__ == "__main__":
         detector_params['k'] = int(args.k)
     if language == 'fr' and ('abae' in args.config):
         detector_params['dim_emb'] = 200
-        
-        
     
     detector = import_from_path(config["model"]["filepath"],
                                 config["model"]["class"])(wemb, dataset = train_texts, **detector_params)
@@ -100,9 +79,11 @@ if __name__ == "__main__":
         detector.train()
         res = detector.predict_aspect()
         print(res)
-    elif pred_sentence:
-        res = detector.predict_sentence(sentence)
-        print(res)
+#     else :
+#         sentence = config[language]['sentences']['sentence%s'%args.sentence]
+#         print(f"Applying model to\n{sentence}")
+#         res = detector.predict_sentence(sentence)
+#         print(f"result:\n{res}")
     else:
         res = detector.predict_aspect()
         print(res)
