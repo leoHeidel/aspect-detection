@@ -8,10 +8,10 @@ model:
         neg_m: 20
         batch_size: 50
         emb_name: w2v
-        lr: 0.001
+        lr: 0.01
         dim_emb: 300
         max_length: 512
-        epochs: 15
+        epochs: 30
         reg: 1.
         dist: cosin
         

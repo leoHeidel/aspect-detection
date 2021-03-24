@@ -32,7 +32,7 @@ if __name__ == "__main__":
                         help = "Language on which we perform aspect extraction : 'fr' or 'eng'.", 
                         default="eng",
                         choices=['eng', 'fr'])
-    parser.add_argument("-k", help="Number of aspects", default=5)
+    parser.add_argument("-k", help="Number of aspects", default=14)
     parser.add_argument("-s", "--sentence", default=0)
     parser.add_argument("-t", "--train", action='store_true')
     args = parser.parse_args()
